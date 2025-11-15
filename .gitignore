@@ -1,0 +1,8 @@
+.venv/
+venv/
+*.exe
+*.dll
+*.pt
+*.pth
+*.pgn 
+__pycache__/
