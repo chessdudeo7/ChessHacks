@@ -13,7 +13,7 @@ stub = modal.App(name="chess-training-job")
 # You must now add mounts directly to the Image definition.
 image = (
     modal.Image.debian_slim()
-    .pip_install("torch", "python-chess", "tqdm")
+    .pip_install("torch", "python-chess", "tqdm", "numpy")
     .add_local_dir(
         "./training", remote_path="/root/src"  # Mounts 'training' dir to '/root/src'
     )
@@ -37,7 +37,7 @@ CONTAINER_PGN_PATH = "/root/pgn_data"
     image=image,
     volumes={"/model_data": model_volume},
     gpu="any",
-    timeout=1800,
+    timeout=86400,
 )
 def train_model():
     import sys
@@ -72,7 +72,7 @@ def train_model():
     # Load positions
     # -----------------------------
     print("Loading PGN position data...")
-    positions = load_positions_from_pgn_folder(PGN_FOLDER, limit_games=None)
+    positions = load_positions_from_pgn_folder(PGN_FOLDER, limit_games=100)
     if not positions:
         print(
             f"Error: No positions loaded. Did the PGN folder mount correctly at {PGN_FOLDER}?"
