@@ -5,8 +5,9 @@ import time
 import chess
 import os
 
+# --- IMPORTANT FIX ---
+# Do NOT import `main` here. Modal needs lazy import inside endpoints.
 from src.utils import chess_manager
-from src import main
 
 app = FastAPI()
 
@@ -18,6 +19,10 @@ async def root():
 
 @app.post("/move")
 async def get_move(request: Request):
+
+    # --- IMPORTANT FIX: lazy import to avoid Modal startup failure ---
+    from src import main  # noqa: F401
+
     try:
         data = await request.json()
     except Exception:
@@ -53,7 +58,7 @@ async def get_move(request: Request):
 
     # Ensure move is a chess.Move object
     if isinstance(move, tuple):
-        move_obj = move[0]  # first element is the actual move
+        move_obj = move[0]
     else:
         move_obj = move
 
@@ -73,11 +78,11 @@ async def get_move(request: Request):
     if not isinstance(move_probs, dict):
         move_probs_dict = None
     else:
-        # Translate move_probs to Dict[str, float] safely
-        move_probs_dict = {}
-        for m, prob in move_probs.items():
-            if isinstance(m, chess.Move) and isinstance(prob, float):
-                move_probs_dict[m.uci()] = prob
+        move_probs_dict = {
+            m.uci(): prob
+            for m, prob in move_probs.items()
+            if isinstance(m, chess.Move) and isinstance(prob, float)
+        }
 
     return JSONResponse(
         content={

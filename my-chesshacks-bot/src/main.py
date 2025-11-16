@@ -10,7 +10,7 @@ from .utils import chess_manager, GameContext
 # ----------------------------------------------------
 # Add training folder (where model and dataset code live)
 # ----------------------------------------------------
-TRAINING_DIR = r"C:\Users\snowy\Documents\ChessHacks\training"
+TRAINING_DIR = "C:\Users\snowy\Documents\ChessHacks\training"
 sys.path.insert(0, TRAINING_DIR)
 
 # Import your training code
